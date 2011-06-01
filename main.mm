@@ -23,9 +23,9 @@ Texture g_LightTex;
 
 int g_AnimationMode = 0;															// Default animation, changed by pressing keys 1-0
 const float g_CameraDistance = 30;													// Distance camera is away from the rings
-const float g_UpdateRate = 120;														// Update is called 60 times per second
+const float g_UpdateRate = 120;	// doubled this rate to increase change speed       // Update is called 60 times per second
 
-const uint32 g_RingCount = 6;														// Number of rings
+const uint32 g_RingCount = 6; // added one additional set of rings					// Number of rings
 const uint32 g_LightsPerRing[g_RingCount] = { 212, 165, 165, 121, 76, 31 };				// Each rings light count
 const float g_RadiusPerRing[g_RingCount] = { 10.0f, 8.0f, 8.0f, 6.0f, 4.0f, 2.0f};		// Each rings radius in ft
 const float g_HeightPerRing[g_RingCount] = { 0.0f, 2.8f, 4.0f, 8.0f, 12.0f, 16.0f};		// Each rings height off the ground in ft
@@ -109,13 +109,12 @@ void RandomRingChaserFunction()
 	}
 }
 
-void RainbowChaserFunction()
+void RainbowChaserFunction() // DAN - added this function in to chase specific colors
 {
     static uint32 lightIndex = 0;
-	static uint8 r = 31;
-	static uint8 g = 15;
-	static uint8 b = 2;
-    static uint32 x = 0;
+	static uint8 r = 0; //starts out black
+	static uint8 g = 0;
+	static uint8 b = 0;
     static uint32 y = 1;
     static uint32 z = 1;
     
@@ -127,48 +126,19 @@ void RainbowChaserFunction()
 	{
         if (z==0) {
             lightIndex=0;
-            r=31;g=31;b=31;
-            x=0;y=1;z=1;
+            r=31;g=31;b=31; // changes to white
+            y=1;z=1;
         } else {
             if (y==0) {
                 lightIndex=0;
-                r=1;g=31;b=1;
-                x=1;y=1;z=0;
+                r=1;g=31;b=1; // changes to a green
+                y=1;z=0;
             } else {
                 lightIndex=0;
-                r=31;g=1;b=31;
-                x=1;y=0;z=1;
+                r=31;g=1;b=31; // changes to pink
+                y=0;z=1;
             }
-        } 
-        
-/*        if (z==0) {
-            lightIndex = 0;
-            r = 3;
-            g = 31;
-            b = 2;
-            x = 0;
-            y = 1;
-            z = 1;
-        }
-        if (y==0) {
-            lightIndex = 0;
-            r = 6;
-            g = 3;
-            b = 24;
-            x = 1;
-            y = 1;
-            z = 0;
-        }
-        if(x==0)
-        {
-            lightIndex = 0;
-            r = 24;
-            g = 31;
-            b = 2;
-            x = 1;
-            y = 0;
-            z = 1;
-        }*/
+        }        
 	}
 }
 
@@ -184,8 +154,8 @@ void Update()
 		}
 		case 1:
 		{
-			// Mode 1 will set 20 random lights to random colors
-			RandomColorsFunction(1);
+			// Mode 1 will set 40 random lights to random colors
+			RandomColorsFunction(40);
 			break;
 		}
 		case 2:
