@@ -23,7 +23,7 @@ Texture g_LightTex;
 
 int g_AnimationMode = 0;															// Default animation, changed by pressing keys 1-0
 const float g_CameraDistance = 30;													// Distance camera is away from the rings
-const float g_UpdateRate = 120;	// doubled this rate to increase change speed       // Update is called 60 times per second
+const float g_UpdateRate = 60;	// doubled this rate to increase change speed       // Update is called 60 times per second
 
 const uint32 g_RingCount = 6; // added one additional set of rings					// Number of rings
 const uint32 g_LightsPerRing[g_RingCount] = { 212, 165, 165, 121, 76, 31 };				// Each rings light count
@@ -112,9 +112,10 @@ void RandomRingChaserFunction()
 void RainbowChaserFunction() // DAN - added this function in to chase specific colors
 {
     static uint32 lightIndex = 0;
-	static uint8 r = 0; //starts out black
+	static uint8 r = 0; //starts out by turning the lights off
 	static uint8 g = 0;
 	static uint8 b = 0;
+    static uint32 x = 1;
     static uint32 y = 1;
     static uint32 z = 1;
     
@@ -124,23 +125,63 @@ void RainbowChaserFunction() // DAN - added this function in to chase specific c
     
     if (lightIndex>=g_Lights.GetNumberOfLights())
 	{
+        lightIndex=0;
         if (z==0) {
-            lightIndex=0;
             r=31;g=31;b=31; // changes to white
-            y=1;z=1;
+            x=1;y=1;z=1;
         } else {
             if (y==0) {
-                lightIndex=0;
                 r=1;g=31;b=1; // changes to a green
-                y=1;z=0;
+                x=1;y=1;z=0;
             } else {
-                lightIndex=0;
-                r=31;g=1;b=31; // changes to pink
-                y=0;z=1;
+                if (x==0) {
+                    r=31;g=1;b=31; // changes to pink
+                    x=1;y=0;z=1;
+                } else {
+                    r=1;g=1;b=31; // changes to blue
+                    x=0;y=1;z=1;
+                }
             }
         }        
 	}
 }
+
+void AquaColorsFunction(uint32 lightCount)
+{
+    uint32 a = 0;
+	// Mode five sets random lights to set colors...
+	for (uint32 i=0; i<lightCount; ++i)
+	{
+		uint32 light = Rand(g_Lights.GetNumberOfLights());
+        
+        if (a==0) {
+            g_Lights.SetColor_15bit(light,1,1,31);
+            a=1;
+        } else {
+            g_Lights.SetColor_15bit(light,1,15,15);
+            a=0;
+        }
+	}
+}
+
+void FireColorsFunction(uint32 lightCount)
+{
+    uint32 a = 0;
+	// Mode five sets random lights to set colors...
+	for (uint32 i=0; i<lightCount; ++i)
+	{
+		uint32 light = Rand(g_Lights.GetNumberOfLights());
+        
+        if (a==0) {
+            g_Lights.SetColor_15bit(light,30,20,0);
+            a=1;
+        } else {
+            g_Lights.SetColor_15bit(light,15,0,0);
+            a=0;
+        }
+	}
+}
+
 
 void Update()
 {
@@ -179,12 +220,14 @@ void Update()
 		case 5:
 		{
 			// TODO! Your own effect
-			break;
+			AquaColorsFunction(40);
+            break;
 		}
 		case 6:
 		{
 			// TODO! Your own effect
-			break;
+			FireColorsFunction(10);
+            break;
 		}
 		case 7:
 		{
